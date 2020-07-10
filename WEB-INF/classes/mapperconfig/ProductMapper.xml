@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace的名称为数据访问层的接口 -->
+<mapper namespace="com.oracle.mapper.ProductMapper">
+	
+	<!-- 返回的类型为 java.util.HashMap ,如果查询的结果为多行 自动封装为List<HashMap>-->
+	<select id="getAllProduct" resultType="java.util.HashMap">
+		SELECT 
+			p.*,pt.name AS typename 
+		FROM product p ,producttype pt 
+		WHERE p.typeid = pt.id
+	</select>
+	
+	<!-- 获取所有的行数 int = java.lang.Integer -->
+	<select id="getRowCount" resultType="int">
+		select count(1) from product
+	</select>
+	<!-- 获取分页数据  -->
+	<select id="getAllProductByPage" resultType="java.util.HashMap">
+		<bind name="offset" value="page*pagesize-pagesize"/>
+		SELECT 
+			p.*,pt.name AS typename 
+		FROM product p ,producttype pt 
+		WHERE p.typeid = pt.id
+		LIMIT #{offset},#{pagesize}
+	</select>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace的名称为数据访问层的接口 -->
+<mapper namespace="com.oracle.mapper.ProducttypeMapper">
+	
+	<!-- 获取所有的行数 int = java.lang.Integer -->
+	<select id="getRowCount" resultType="int">
+		select count(1) from producttype
+	</select>
+	<!-- 获取分页数据  -->
+	<select id="getAllProType" resultType="com.oracle.entity.Producttype">
+		<bind name="offset" value="page*pagesize-pagesize"/>
+		SELECT 
+			*
+		FROM producttype
+		LIMIT #{offset},#{pagesize}
+	</select>
+	
+	<!--删除商品类型  -->
+	<delete id="delProtype">
+		delete from producttype where id = #{id}
+	</delete>
+	
+	<!--添加商品类型  -->
+	<insert id="addProtype">
+		insert into producttype(name) values(#{name})
+	</insert>
+	
+	<!--根据ID获取商品数据  -->
+	<select id="getProtypeById" resultType="com.oracle.entity.Producttype">
+		select * from producttype where id = #{id}
+	</select>
+	
+	
+	<!--修改商品类型  -->
+	<update id="updateProtype" parameterType="com.oracle.entity.Producttype">
+		update producttype set name = #{name} where id = #{id}
+	</update>
+	
+	
+</mapper>

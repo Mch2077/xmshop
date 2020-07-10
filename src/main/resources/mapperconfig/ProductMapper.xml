@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace的名称为数据访问层的接口 -->
+<mapper namespace="com.oracle.mapper.ProductMapper">
+	
+	<!-- 返回的类型为 java.util.HashMap ,如果查询的结果为多行 自动封装为List<HashMap>-->
+	<select id="getAllProduct" resultType="java.util.HashMap">
+		SELECT 
+			p.*,pt.name AS typename 
+		FROM product p 
+		LEFT OUTER JOIN producttype pt ON p.typeid = pt.id
+	</select>
+	
+	<!-- 获取所有的行数 int = java.lang.Integer -->
+	<select id="getRowCount" resultType="int">
+		select count(1) from product where 1=1
+		<!-- 注意：模糊查询的语法 -->
+		<if test="name!=null">
+			<bind name="p_name" value="'%'+name+'%'" />
+			and name like #{p_name}
+		</if>
+		<if test="typeid!=-1">
+			and typeid = #{typeid}
+		</if>
+	</select>
+	<!-- 获取分页数据  -->
+	<select id="getAllProductByPage" resultType="java.util.HashMap">
+		<bind name="offset" value="page*pagesize-pagesize"/>
+		SELECT 
+		p.*,pt.name AS typename
+		FROM product p,producttype pt
+		WHERE p.typeid = pt.id 
+		<!-- 注意：模糊查询的语法 -->
+		<if test="name!=null">
+			<bind name="p_name" value="'%'+name+'%'" />
+			and p.name like #{p_name}
+		</if>
+		<if test="typeid!=-1">
+			and p.typeid = #{typeid}
+		</if>
+		LIMIT #{offset},#{pagesize}
+	</select>
+	
+	<!--删除商品  -->
+	<delete id="deleteProduct">
+		delete from  product where id = #{id}
+	</delete>
+	
+	<!--添加商品  如果主键为自动增加  可以使用null 占位主键的位置-->
+	<insert id="addProduct" parameterType="com.oracle.entity.Product">
+		insert into product values(null,#{name},#{content},#{price},#{image},#{number},#{typeid},#{date})
+	</insert>
+	
+	<!-- 根据id获取当前行的数据 -->
+	<select id="getProductById" resultType="com.oracle.entity.Product">
+		select * from product where id = #{id}
+	</select>
+	
+	
+	<!--商品修改  -->
+	<update id="updatePro" parameterType="com.oracle.entity.Product">
+		update product 
+		set 
+		name = #{name},content = #{content},
+		price = #{price},image = #{image},
+		number = #{number},typeid = #{typeid},
+		date = #{date}
+		where id = #{id}
+	</update>
+</mapper>

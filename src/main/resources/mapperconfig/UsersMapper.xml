@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace的名称为数据访问层的接口 -->
+<mapper namespace="com.oracle.mapper.UserMapper">
+	<!-- id为 UserMapper里面的方法login的名称-->
+	<!-- parameterType为 UserMapper里面的方法login的参数类型-->
+	<!-- resultType为 UserMapper里面的方法login的返回类型-->
+	<select id="login" parameterType="com.oracle.entity.Users" resultType="com.oracle.entity.Users">
+		<!-- sql语句 -->
+		select * from users where uname = #{uname} and upass = #{upass}
+	</select>
+	
+	
+	<!-- 获取所有的行数 int = java.lang.Integer -->
+	<select id="getRowCount" resultType="int">
+		select count(1) from users
+	</select>
+	<!-- 获取分页数据  -->
+	<select id="getAllUsers" resultType="com.oracle.entity.Users">
+		<bind name="offset" value="page*pagesize-pagesize"/>
+		SELECT 
+			*
+		FROM users
+		LIMIT #{offset},#{pagesize}
+	</select>
+	
+	<!-- 删除用户 -->
+    <delete id="deleteUsersById" parameterType="java.lang.Integer">
+        delete from users
+        where uid = #{id}
+    </delete>
+   <!-- 增加用户 --> 
+   <insert id="insertUsers" parameterType="com.oracle.entity.Users">
+        insert into users(uname,upass,usex,uage,udepartment,realname,uimage,roleid) 
+        values(#{uname},#{upass},#{usex},#{uage},#{udepartment},#{realname},#{uimage},#{roleid})
+    </insert>
+    
+    <!--用户修改 by ChenKeJun-->
+	<update id="updateUsers" parameterType="com.oracle.entity.Users">
+		update users 
+		<set>
+			<if test="uname != null">
+				uname = #{uname},
+			</if>
+			<if test="upass != null">
+				upass = #{upass},
+			</if>
+			<if test="usex != null">
+				usex = #{usex},
+			</if>
+			<if test="uage != null">
+				uage = #{uage},
+			</if>
+			<if test="udepartment != null">
+				udepartment = #{udepartment},
+			</if>
+			<if test="realname != null">
+				realname = #{realname},
+			</if>
+			<if test="uimage != null">
+				uimage = #{uimage},
+			</if>
+			<if test="roleid != null">
+				roleid = #{roleid}
+			</if>
+		</set> 
+		where uid = #{uid}
+	</update>
+	
+	<!--根据ID获取用户数据  by ChenKeJun-->
+	<select id="getUserById" resultType="com.oracle.entity.Users">
+		select * from users where uid = #{uid}
+	</select>
+</mapper>

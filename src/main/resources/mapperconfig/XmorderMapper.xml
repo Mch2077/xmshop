@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace的名称为数据访问层的接口 -->
+<mapper namespace="com.oracle.mapper.XmorderMapper">
+	
+	<!-- 获取所有的行数 int = java.lang.Integer -->
+	<select id="getRowCount" resultType="int">
+		select count(1) from xmorder
+	</select>
+	<!-- 获取分页数据  -->
+	<select id="getOrderByPage" resultType="java.util.HashMap">
+		<bind name="offset" value="page*pagesize-pagesize"/>
+		SELECT 
+		o.oid,c.realname AS realname,a.address AS address,
+		o.totalprice,o.remarks,o.status,o.odate
+		FROM xmorder o,customer c,address a
+		WHERE o.customerid = c.cid AND o.addressId = a.addressId
+		ORDER BY o.odate DESC
+		LIMIT #{offset},#{pagesize}
+	</select>
+</mapper>
